@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Message, AnalysisResult } from '@/types';
+import { Message, AnalysisResult } from '@/types/index';
 import { ApiClient } from '@/utils/api';
 import MessageBubble from './MessageBubble';
 import EmailInput from './EmailInput';

@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import { Message } from '@/types';
+import { Message } from '@/types/index';
 import { formatTimestamp, formatSectorClassifications } from '@/utils/api';
 
 interface MessageBubbleProps {

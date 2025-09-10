@@ -1,4 +1,5 @@
-import { ChatResponse, AnalysisResult, ApiError } from '@/types';
+import { ChatResponse, AnalysisResult } from '@/types';
+import { ApiError } from '@/types/index';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
