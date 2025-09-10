@@ -7,10 +7,10 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json* ./
+COPY package.json ./
 
-# Install dependencies
-RUN npm ci --omit=dev && npm cache clean --force
+# Install dependencies (generate fresh lock file and install)
+RUN npm install --omit=dev && npm cache clean --force
 
 # Rebuild the source code only when needed
 FROM base AS builder
