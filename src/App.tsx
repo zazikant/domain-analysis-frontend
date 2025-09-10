@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div className="App">
-      <ChatInterface sessionId={sessionId} />
+      <ChatInterface />
       
       <style jsx global>{`
         * {
