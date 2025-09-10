@@ -9,8 +9,8 @@ WORKDIR /app
 # Copy package files
 COPY package.json ./
 
-# Install dependencies (generate fresh lock file and install)
-RUN npm install --omit=dev && npm cache clean --force
+# Clean npm cache and install dependencies
+RUN npm cache clean --force && npm install --omit=dev
 
 # Rebuild the source code only when needed
 FROM base AS builder
