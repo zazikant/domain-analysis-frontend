@@ -27,8 +27,8 @@ RUN ls -la .
 RUN ls -la src/ || echo "No src directory found"
 
 # Set build arguments and environment variables
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_API_URL=https://domain-analysis-backend-456664817971.europe-west1.run.app
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-https://domain-analysis-backend-456664817971.europe-west1.run.app}
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
 
