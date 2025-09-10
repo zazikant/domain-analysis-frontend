@@ -26,7 +26,9 @@ COPY . .
 RUN ls -la .
 RUN ls -la src/ || echo "No src directory found"
 
-# Set environment variables for build
+# Set build arguments and environment variables
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
 
