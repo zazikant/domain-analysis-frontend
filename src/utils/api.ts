@@ -1,7 +1,7 @@
 import { ChatResponse, AnalysisResult } from '@/types';
 import { ApiError } from '@/types/index';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://domain-analysis-backend-456664817971.europe-west1.run.app';
 
 export class ApiClient {
   private sessionId: string;
