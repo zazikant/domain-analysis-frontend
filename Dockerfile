@@ -22,6 +22,10 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy source code
 COPY . .
 
+# Debug: List what was copied
+RUN ls -la .
+RUN ls -la src/ || echo "No src directory found"
+
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
