@@ -35,7 +35,21 @@
   }
   
   .input-container {
-    @apply border-t border-gray-200 p-4 bg-white;
+    @apply border-t border-gray-200 p-4 bg-white space-y-4;
+  }
+  
+  .separator {
+    @apply flex items-center justify-center text-gray-400 text-sm font-medium;
+  }
+  
+  .separator span {
+    @apply bg-white px-4 relative;
+  }
+  
+  .separator::before {
+    @apply absolute inset-0 flex items-center;
+    content: '';
+    border-top: 1px solid #e5e7eb;
   }
   
   .loading-dots {

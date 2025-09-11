@@ -3,12 +3,14 @@ import { Message, AnalysisResult } from '@/types/index';
 import { ApiClient } from '@/utils/api';
 import MessageBubble from './MessageBubble';
 import EmailInput from './EmailInput';
+import FileUpload from './FileUpload';
 
 const apiClient = new ApiClient();
 
 export const ChatInterface: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionId] = useState(() => `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages are added
@@ -100,6 +102,75 @@ export const ChatInterface: React.FC = () => {
     }
   };
 
+  const handleFileUpload = async (file: File): Promise<void> => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    // Add user message
+    addMessage({
+      type: 'user',
+      content: `📁 Uploaded CSV file: ${file.name}`,
+      timestamp: new Date(),
+    });
+
+    // Add loading message
+    const loadingId = addMessage({
+      type: 'loading',
+      content: 'Processing CSV file...',
+      timestamp: new Date(),
+    });
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('session_id', sessionId);
+
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://domain-analysis-backend-456664817971.europe-west1.run.app';
+      const response = await fetch(`${API_BASE_URL}/chat/upload-csv`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      // Remove loading message
+      removeMessage(loadingId);
+
+      if (result.error) {
+        addMessage({
+          type: 'system',
+          content: `❌ ${result.error}`,
+          timestamp: new Date(),
+        });
+      } else {
+        addMessage({
+          type: 'system',
+          content: `✅ ${result.message}`,
+          timestamp: new Date(),
+        });
+      }
+
+    } catch (error) {
+      // Remove loading message
+      removeMessage(loadingId);
+
+      // Add error message
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload CSV file';
+      addMessage({
+        type: 'system',
+        content: `❌ Error: ${errorMessage}\n\nPlease try again or contact support if the issue persists.`,
+        timestamp: new Date(),
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const clearChat = () => {
     setMessages([{
       id: 'welcome-new',
@@ -143,11 +214,25 @@ export const ChatInterface: React.FC = () => {
       </div>
 
       {/* Input Container */}
-      <EmailInput 
-        onSendEmail={handleSendEmail} 
-        isLoading={isLoading}
-        disabled={false}
-      />
+      <div className="input-container">
+        <EmailInput 
+          onSendEmail={handleSendEmail} 
+          isLoading={isLoading}
+          disabled={false}
+        />
+        
+        <div className="separator">
+          <span>OR</span>
+        </div>
+        
+        <FileUpload
+          onFileSelect={handleFileUpload}
+          isUploading={isLoading}
+          disabled={false}
+          apiClient={apiClient}
+          sessionId={sessionId}
+        />
+      </div>
 
       {/* Footer */}
       <div className="px-4 py-2 text-center text-xs text-gray-400 bg-gray-50">

@@ -101,6 +101,32 @@ export class ApiClient {
     }
   }
 
+  async previewCSV(file: File, sessionId: string): Promise<any> {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('session_id', sessionId);
+
+      const response = await fetch(`${API_BASE_URL}/chat/preview-csv`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData: ApiError = await response.json().catch(() => ({ 
+          detail: `HTTP error! status: ${response.status}` 
+        }));
+        throw new Error(errorData.detail || 'Failed to preview CSV');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error previewing CSV:', error);
+      throw error;
+    }
+  }
+
   getSessionId(): string {
     return this.sessionId;
   }
