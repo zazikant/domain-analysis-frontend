@@ -39,7 +39,10 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('File upload button clicked');
     fileInputRef.current?.click();
   };
 
@@ -56,8 +59,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('File input change triggered');
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      console.log('No file selected');
+      return;
+    }
+    console.log('File selected:', file.name);
 
     // Validate file type
     if (!file.name.toLowerCase().endsWith('.csv')) {
@@ -106,7 +114,15 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
   return (
     <>
-      <div className="file-upload">
+      <div className="flex flex-col items-center gap-2">
+        {/* Debug button */}
+        <button 
+          onClick={() => console.log('Debug button clicked')}
+          className="px-2 py-1 bg-red-500 text-white text-xs rounded"
+        >
+          Debug Click Test
+        </button>
+        
         <input
           ref={fileInputRef}
           id="csv-file-input"
@@ -121,11 +137,17 @@ const FileUpload: React.FC<FileUploadProps> = ({
         <button
           onClick={handleButtonClick}
           disabled={disabled || isUploading || isLoadingPreview}
-          className="upload-button"
+          className={`
+            flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium
+            ${disabled || isUploading || isLoadingPreview 
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+              : 'bg-slate-50 border border-gray-300 text-gray-700 cursor-pointer hover:bg-slate-100 hover:border-blue-400 hover:-translate-y-0.5'
+            }
+          `}
           title="Upload CSV file with email addresses"
         >
           {isUploading || isLoadingPreview ? (
-            <Loader2 size={20} className="spinner" />
+            <Loader2 size={20} className="animate-spin" />
           ) : (
             <Upload size={20} />
           )}
@@ -135,78 +157,84 @@ const FileUpload: React.FC<FileUploadProps> = ({
           </span>
         </button>
 
-        <div className="upload-info">
+        <div className="flex items-center gap-1 text-xs text-slate-600 text-center">
           <FileText size={16} />
-          <span>Upload CSV with emails</span>
+          <span className="whitespace-nowrap">Upload CSV with emails</span>
         </div>
       </div>
 
       {/* CSV Preview Modal */}
       {showPreview && preview && (
-        <div className="preview-modal">
-          <div className="preview-content">
-            <div className="preview-header">
-              <div className="header-title">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style={{ zIndex: 9999 }}>
+          <div className="bg-white rounded-xl max-w-lg w-full max-h-[80vh] overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <div className="flex items-center gap-3">
                 <Eye size={20} />
-                <h3>CSV Preview</h3>
+                <h3 className="text-xl font-semibold text-gray-900">CSV Preview</h3>
               </div>
-              <button onClick={handleCancelUpload} className="close-button">
+              <button 
+                onClick={handleCancelUpload} 
+                className="p-2 hover:bg-gray-100 rounded-md transition-colors text-gray-500 hover:text-gray-700"
+              >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="preview-stats">
-              <div className="stat">
-                <CheckCircle size={16} className="stat-icon valid" />
+            <div className="p-4 bg-gray-50 flex flex-wrap gap-4">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <CheckCircle size={16} className="text-emerald-500" />
                 <span>{preview.stats.valid_emails} valid emails found</span>
               </div>
-              <div className="stat">
-                <CheckCircle size={16} className="stat-icon new" />
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <CheckCircle size={16} className="text-cyan-500" />
                 <span>{preview.stats.new_emails} new emails to process</span>
               </div>
               {preview.stats.invalid_emails > 0 && (
-                <div className="stat">
-                  <X size={16} className="stat-icon invalid" />
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <X size={16} className="text-red-500" />
                   <span>{preview.stats.invalid_emails} invalid entries</span>
                 </div>
               )}
               {preview.stats.duplicates_removed > 0 && (
-                <div className="stat">
-                  <FileText size={16} className="stat-icon duplicate" />
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <FileText size={16} className="text-amber-500" />
                   <span>{preview.stats.duplicates_removed} CSV duplicates</span>
                 </div>
               )}
               {preview.stats.bigquery_duplicates > 0 && (
-                <div className="stat">
-                  <AlertTriangle size={16} className="stat-icon bigquery-duplicate" />
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <AlertTriangle size={16} className="text-purple-600" />
                   <span>{preview.stats.bigquery_duplicates} already in database</span>
                 </div>
               )}
             </div>
 
-            <div className="preview-list">
-              <h4>First {preview.valid_emails.length} new emails to be processed:</h4>
-              <div className="email-list">
+            <div className="p-6 max-h-72 overflow-y-auto">
+              <h4 className="font-semibold text-gray-700 mb-4">First {preview.valid_emails.length} new emails to be processed:</h4>
+              <div className="space-y-2">
                 {preview.valid_emails.map((email, index) => (
-                  <div key={index} className="email-item">
-                    <span className="email-text">{email}</span>
+                  <div key={index} className="p-3 bg-slate-50 rounded-md border border-slate-200">
+                    <span className="font-mono text-sm text-slate-800">{email}</span>
                   </div>
                 ))}
               </div>
               {preview.has_more && (
-                <p className="more-info">
+                <p className="mt-4 text-sm text-gray-500 italic">
                   + {preview.total_count - preview.valid_emails.length} more new emails...
                 </p>
               )}
             </div>
 
-            <div className="preview-actions">
-              <button onClick={handleCancelUpload} className="cancel-button">
+            <div className="p-6 border-t border-gray-200 flex gap-4 justify-end">
+              <button 
+                onClick={handleCancelUpload} 
+                className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
                 Cancel
               </button>
               <button 
                 onClick={handleConfirmUpload} 
-                className="confirm-button"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                 disabled={preview.stats.new_emails === 0}
               >
                 Process {preview.stats.new_emails} new emails
@@ -216,268 +244,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
         </div>
       )}
 
-      <style jsx>{`
-        .file-upload {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .upload-button {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.75rem 1rem;
-          background: #f8fafc;
-          border: 1px solid #d1d5db;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: all 0.2s;
-          font-size: 0.9rem;
-          font-weight: 500;
-          color: #374151;
-        }
-
-        .upload-button:hover:not(:disabled) {
-          background: #f1f5f9;
-          border-color: #667eea;
-          transform: translateY(-1px);
-        }
-
-        .upload-button:disabled {
-          background: #f9fafb;
-          color: #9ca3af;
-          cursor: not-allowed;
-          transform: none;
-        }
-
-        .spinner {
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        .upload-info {
-          display: flex;
-          align-items: center;
-          gap: 0.25rem;
-          font-size: 0.75rem;
-          color: #64748b;
-          text-align: center;
-        }
-
-        .upload-info span {
-          white-space: nowrap;
-        }
-
-        /* Preview Modal Styles */
-        .preview-modal {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-          padding: 1rem;
-        }
-
-        .preview-content {
-          background: white;
-          border-radius: 12px;
-          max-width: 500px;
-          width: 100%;
-          max-height: 80vh;
-          overflow: hidden;
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        }
-
-        .preview-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 1.5rem;
-          border-bottom: 1px solid #e5e7eb;
-        }
-
-        .header-title {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-
-        .header-title h3 {
-          margin: 0;
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: #111827;
-        }
-
-        .close-button {
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 0.5rem;
-          border-radius: 6px;
-          color: #6b7280;
-          transition: all 0.2s;
-        }
-
-        .close-button:hover {
-          background: #f3f4f6;
-          color: #374151;
-        }
-
-        .preview-stats {
-          padding: 1rem 1.5rem;
-          background: #f9fafb;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 1rem;
-        }
-
-        .stat {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 0.875rem;
-          font-weight: 500;
-        }
-
-        .stat-icon.valid {
-          color: #10b981;
-        }
-
-        .stat-icon.new {
-          color: #06b6d4;
-        }
-
-        .stat-icon.invalid {
-          color: #ef4444;
-        }
-
-        .stat-icon.duplicate {
-          color: #f59e0b;
-        }
-
-        .stat-icon.bigquery-duplicate {
-          color: #9333ea;
-        }
-
-        .preview-list {
-          padding: 1.5rem;
-          max-height: 300px;
-          overflow-y: auto;
-        }
-
-        .preview-list h4 {
-          margin: 0 0 1rem 0;
-          font-size: 1rem;
-          font-weight: 600;
-          color: #374151;
-        }
-
-        .email-list {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .email-item {
-          padding: 0.75rem;
-          background: #f8fafc;
-          border-radius: 6px;
-          border: 1px solid #e2e8f0;
-        }
-
-        .email-text {
-          font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-          font-size: 0.875rem;
-          color: #1e293b;
-        }
-
-        .more-info {
-          margin: 1rem 0 0 0;
-          font-size: 0.875rem;
-          color: #6b7280;
-          font-style: italic;
-        }
-
-        .preview-actions {
-          padding: 1.5rem;
-          border-top: 1px solid #e5e7eb;
-          display: flex;
-          gap: 1rem;
-          justify-content: flex-end;
-        }
-
-        .cancel-button, .confirm-button {
-          padding: 0.75rem 1.5rem;
-          border-radius: 8px;
-          font-size: 0.875rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s;
-          border: none;
-        }
-
-        .cancel-button {
-          background: #f3f4f6;
-          color: #374151;
-        }
-
-        .cancel-button:hover {
-          background: #e5e7eb;
-        }
-
-        .confirm-button {
-          background: #667eea;
-          color: white;
-        }
-
-        .confirm-button:hover:not(:disabled) {
-          background: #5a67d8;
-        }
-
-        .confirm-button:disabled {
-          background: #9ca3af;
-          cursor: not-allowed;
-        }
-
-        @media (max-width: 640px) {
-          .upload-info {
-            display: none;
-          }
-          
-          .preview-modal {
-            padding: 0.5rem;
-          }
-          
-          .preview-content {
-            max-height: 90vh;
-          }
-          
-          .preview-stats {
-            flex-direction: column;
-            gap: 0.5rem;
-          }
-          
-          .preview-actions {
-            flex-direction: column;
-          }
-        }
-      `}</style>
     </>
   );
 };
