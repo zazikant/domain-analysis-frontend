@@ -27,7 +27,7 @@ export const ChatInterface: React.FC = () => {
     const welcomeMessage: Message = {
       id: 'welcome',
       type: 'system',
-      content: '👋 Welcome to Domain Analysis Chat!\n\nI can help you analyze email domains to get business insights and sector classifications. Just enter an email address to get started.',
+      content: '📧 Enter an Email ID or upload a CSV file with Email Header in the First Row (CSV format is mandatory).\n\nGet comprehensive business insights and sector classifications for any domain.',
       timestamp: new Date(),
     };
     setMessages([welcomeMessage]);
@@ -175,7 +175,7 @@ export const ChatInterface: React.FC = () => {
     setMessages([{
       id: 'welcome-new',
       type: 'system',
-      content: '🔄 Chat cleared. Ready to analyze new email domains!',
+      content: '📧 Enter an Email ID or upload a CSV file with Email Header in the First Row (CSV format is mandatory).\n\nGet comprehensive business insights and sector classifications for any domain.',
       timestamp: new Date(),
     }]);
   };
@@ -184,24 +184,27 @@ export const ChatInterface: React.FC = () => {
     <div className="chat-container">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-900">Domain Analysis Chat</h1>
-          <p className="text-sm text-gray-600 mt-1">Get business insights from email domains</p>
+        <div className="flex items-center space-x-4">
+          <img 
+            src="https://gemengserv.com/wp-content/uploads/2021/04/GEM-Engserv-Pvt-Ltd-logo-updated.png" 
+            alt="GemEngserv Logo" 
+            className="h-12 w-auto"
+          />
+          <div>
+            <h1 className="text-xl font-semibold text-gray-900">Domain Analysis</h1>
+            <p className="text-sm text-gray-600 mt-1">Business intelligence from email domains</p>
+          </div>
         </div>
         
         <div className="flex space-x-3">
           <button
             onClick={clearChat}
             disabled={isLoading}
-            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: '#FECF07' }}
+            className="px-4 py-2 text-sm text-gray-800 font-medium hover:opacity-90 rounded-lg transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Clear Chat
           </button>
-          
-          <div className="flex items-center space-x-2 text-sm text-gray-500">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span>Online</span>
-          </div>
         </div>
       </div>
 
