@@ -35,7 +35,6 @@ function App() {
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          overflow: hidden;
         }
 
         #root {
@@ -48,6 +47,7 @@ function App() {
           align-items: center;
           justify-content: center;
           padding: 1rem;
+          pointer-events: auto;
         }
 
         /* Scrollbar styling */

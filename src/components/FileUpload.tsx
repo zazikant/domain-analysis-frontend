@@ -59,12 +59,17 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
   const processCSVPreview = async (file: File): Promise<EmailPreview> => {
     try {
+      console.log('Starting CSV preview for file:', file.name);
       const result = await apiClient.previewCSV(file, sessionId);
+      console.log('CSV preview result:', result);
+      
       if (result.error) {
+        console.error('Backend returned error:', result.error);
         throw new Error(result.error);
       }
       return result;
     } catch (error) {
+      console.error('processCSVPreview error:', error);
       throw error;
     }
   };
@@ -97,9 +102,18 @@ const FileUpload: React.FC<FileUploadProps> = ({
       setPreview(previewData);
       setShowPreview(true);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error reading CSV file. Please check the format.';
-      alert(errorMessage);
       console.error('CSV preview error:', error);
+      let errorMessage = 'Error reading CSV file. Please check the format.';
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error && typeof error === 'object' && 'error' in error) {
+        errorMessage = (error as any).error;
+      }
+      
+      alert(errorMessage);
     } finally {
       setIsLoadingPreview(false);
     }
