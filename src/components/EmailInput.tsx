@@ -60,6 +60,8 @@ export const EmailInput: React.FC<EmailInputProps> = ({
           <div className="flex-1">
             <input
               ref={inputRef}
+              id="email-input"
+              name="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

@@ -109,6 +109,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
       <div className="file-upload">
         <input
           ref={fileInputRef}
+          id="csv-file-input"
+          name="csvFile"
           type="file"
           accept=".csv"
           onChange={handleFileChange}
