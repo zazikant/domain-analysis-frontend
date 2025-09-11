@@ -54,7 +54,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({
   };
 
   return (
-    <div className="input-container">
+    <div>
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="flex space-x-3">
           <div className="flex-1">

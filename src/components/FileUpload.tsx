@@ -39,10 +39,21 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
 
-  const handleButtonClick = () => {
-    console.log('CSV upload button clicked');
-    if (fileInputRef.current) {
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('CSV upload button clicked - triggering file input');
+    
+    if (!fileInputRef.current) {
+      console.error('File input ref is null');
+      return;
+    }
+    
+    try {
       fileInputRef.current.click();
+      console.log('File input click triggered');
+    } catch (error) {
+      console.error('Error clicking file input:', error);
     }
   };
 
@@ -132,9 +143,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
           disabled={disabled || isUploading || isLoadingPreview}
           style={{ 
             cursor: disabled || isUploading || isLoadingPreview ? 'not-allowed' : 'pointer',
-            pointerEvents: 'auto'
+            pointerEvents: 'auto',
+            zIndex: 1000,
+            position: 'relative'
           }}
-          className="flex items-center gap-2 px-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 hover:border-blue-300 transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
+          className="flex items-center gap-2 px-6 py-4 bg-blue-500 text-white border-2 border-blue-600 rounded-lg text-base font-semibold hover:bg-blue-600 hover:border-blue-700 transition-colors disabled:bg-gray-400 disabled:text-gray-300 disabled:border-gray-400 shadow-lg"
         >
           {isUploading || isLoadingPreview ? (
             <Loader2 size={20} className="animate-spin" />
