@@ -476,7 +476,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
           }
         }
       `}</style>
-    </div>
+    </>
   );
 };
 
