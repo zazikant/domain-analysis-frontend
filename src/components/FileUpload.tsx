@@ -39,11 +39,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
 
-  const handleButtonClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log('File upload button clicked');
-    fileInputRef.current?.click();
+  const handleButtonClick = () => {
+    console.log('CSV upload button clicked');
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
   const processCSVPreview = async (file: File): Promise<EmailPreview> => {
@@ -113,38 +113,28 @@ const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   return (
-    <>
+    <div className="w-full">
+      <input
+        ref={fileInputRef}
+        id="csv-file-input"
+        name="csvFile"
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+        disabled={disabled || isUploading}
+      />
+      
       <div className="flex flex-col items-center gap-2">
-        {/* Debug button */}
-        <button 
-          onClick={() => console.log('Debug button clicked')}
-          className="px-2 py-1 bg-red-500 text-white text-xs rounded"
-        >
-          Debug Click Test
-        </button>
-        
-        <input
-          ref={fileInputRef}
-          id="csv-file-input"
-          name="csvFile"
-          type="file"
-          accept=".csv"
-          onChange={handleFileChange}
-          style={{ display: 'none' }}
-          disabled={disabled || isUploading}
-        />
-        
         <button
+          type="button"
           onClick={handleButtonClick}
           disabled={disabled || isUploading || isLoadingPreview}
-          className={`
-            flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 text-sm font-medium
-            ${disabled || isUploading || isLoadingPreview 
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-              : 'bg-slate-50 border border-gray-300 text-gray-700 cursor-pointer hover:bg-slate-100 hover:border-blue-400 hover:-translate-y-0.5'
-            }
-          `}
-          title="Upload CSV file with email addresses"
+          style={{ 
+            cursor: disabled || isUploading || isLoadingPreview ? 'not-allowed' : 'pointer',
+            pointerEvents: 'auto'
+          }}
+          className="flex items-center gap-2 px-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 hover:border-blue-300 transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-200"
         >
           {isUploading || isLoadingPreview ? (
             <Loader2 size={20} className="animate-spin" />
@@ -153,13 +143,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
           )}
           <span>
             {isUploading ? 'Uploading...' : 
-             isLoadingPreview ? 'Analyzing...' : 'CSV'}
+             isLoadingPreview ? 'Analyzing...' : 'Upload CSV'}
           </span>
         </button>
 
-        <div className="flex items-center gap-1 text-xs text-slate-600 text-center">
+        <div className="flex items-center gap-1 text-xs text-gray-600 text-center">
           <FileText size={16} />
-          <span className="whitespace-nowrap">Upload CSV with emails</span>
+          <span>Upload CSV with email addresses</span>
         </div>
       </div>
 
