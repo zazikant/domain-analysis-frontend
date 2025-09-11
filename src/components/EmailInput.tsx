@@ -67,6 +67,11 @@ export const EmailInput: React.FC<EmailInputProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Enter email address to analyze..."
+              style={{
+                pointerEvents: 'auto',
+                position: 'relative',
+                zIndex: 100
+              }}
               className={clsx(
                 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 transition-colors',
                 'placeholder:text-gray-400',
