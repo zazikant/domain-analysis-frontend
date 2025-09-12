@@ -40,6 +40,12 @@ const AuthContext = createContext<AuthContextType | null>(null);
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://domain-analysis-backend-456664817971.europe-west1.run.app';
 
+// Debug: Alert if client ID is missing (remove after fixing)
+if (!GOOGLE_CLIENT_ID) {
+  console.error('🚨 MISSING: NEXT_PUBLIC_GOOGLE_CLIENT_ID environment variable');
+  console.error('🔧 Set this in Cloud Run environment variables');
+}
+
 // Auth Provider Component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
