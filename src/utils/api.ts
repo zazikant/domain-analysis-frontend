@@ -101,6 +101,92 @@ export class ApiClient {
     }
   }
 
+  async uploadMassiveCSV(file: File, sessionId: string, priority: number = 5): Promise<any> {
+    try {
+      console.log('uploadMassiveCSV called with file:', file.name, 'sessionId:', sessionId);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('session_id', sessionId);
+      formData.append('priority', priority.toString());
+
+      console.log('Making request to:', `${API_BASE_URL}/batch/upload-massive-csv`);
+      const response = await fetch(`${API_BASE_URL}/batch/upload-massive-csv`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
+      if (!response.ok) {
+        const responseText = await response.text();
+        console.error('Error response text:', responseText);
+        
+        try {
+          const errorData = JSON.parse(responseText);
+          throw new Error(errorData.detail || errorData.error || 'Failed to upload massive CSV');
+        } catch (parseError) {
+          throw new Error(`HTTP error! status: ${response.status}, response: ${responseText}`);
+        }
+      }
+
+      const data = await response.json();
+      console.log('Successfully parsed response data:', data);
+      return data;
+    } catch (error) {
+      console.error('Error uploading massive CSV:', error);
+      throw error;
+    }
+  }
+
+  async getBatchStatus(batchId: string): Promise<any> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/batch/status/${batchId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData: ApiError = await response.json().catch(() => ({ 
+          detail: `HTTP error! status: ${response.status}` 
+        }));
+        throw new Error(errorData.detail || 'Failed to get batch status');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error getting batch status:', error);
+      throw error;
+    }
+  }
+
+  async getBatchResults(batchId: string, offset: number = 0, limit: number = 100): Promise<any> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/batch/results/${batchId}?offset=${offset}&limit=${limit}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorData: ApiError = await response.json().catch(() => ({ 
+          detail: `HTTP error! status: ${response.status}` 
+        }));
+        throw new Error(errorData.detail || 'Failed to get batch results');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error getting batch results:', error);
+      throw error;
+    }
+  }
+
   async previewCSV(file: File, sessionId: string): Promise<any> {
     try {
       console.log('previewCSV called with file:', file.name, 'sessionId:', sessionId);

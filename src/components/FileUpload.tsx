@@ -24,6 +24,7 @@ interface FileUploadProps {
   disabled?: boolean;
   apiClient: ApiClient;
   sessionId: string;
+  allowMassiveUpload?: boolean; // New option for unlimited batch size
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ 
@@ -31,7 +32,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
   isUploading, 
   disabled = false,
   apiClient,
-  sessionId
+  sessionId,
+  allowMassiveUpload = false
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<EmailPreview | null>(null);

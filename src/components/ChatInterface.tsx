@@ -4,6 +4,7 @@ import { ApiClient } from '@/utils/api';
 import MessageBubble from './MessageBubble';
 import EmailInput from './EmailInput';
 import FileUpload from './FileUpload';
+import MassiveBatchUpload from './MassiveBatchUpload';
 
 const apiClient = new ApiClient();
 
@@ -234,6 +235,31 @@ export const ChatInterface: React.FC = () => {
           disabled={false}
           apiClient={apiClient}
           sessionId={sessionId}
+        />
+        
+        <div className="separator">
+          <span>OR</span>
+        </div>
+        
+        <MassiveBatchUpload
+          isUploading={isLoading}
+          disabled={false}
+          apiClient={apiClient}
+          sessionId={sessionId}
+          onBatchStarted={(batchId) => {
+            addMessage({
+              type: 'system',
+              content: `🚀 Massive batch processing started!\n\nBatch ID: ${batchId}\n\nThis will process your large CSV file in the background. You can continue using the system while it processes.`,
+              timestamp: new Date(),
+            });
+          }}
+          onBatchCompleted={(batchId, results) => {
+            addMessage({
+              type: 'system',
+              content: `✅ Massive batch processing completed!\n\nBatch ID: ${batchId}\nProcessed ${results.length} emails successfully.\n\nResults are now available in BigQuery for analysis.`,
+              timestamp: new Date(),
+            });
+          }}
         />
       </div>
 
