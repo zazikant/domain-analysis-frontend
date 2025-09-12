@@ -26,6 +26,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({
   useEffect(() => {
     if (email.trim()) {
       const valid = validateEmail(email.trim());
+      console.log(`Email validation: "${email.trim()}" -> ${valid}`);
       setIsValid(valid);
       setError(valid ? '' : 'Please enter a valid email address');
     } else {
@@ -103,6 +104,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({
           <button
             type="submit"
             disabled={!isValid || isLoading || disabled}
+            onClick={() => console.log(`Button state: isValid=${isValid}, isLoading=${isLoading}, disabled=${disabled}`)}
             className={clsx(
               'px-6 py-3 rounded-lg font-medium transition-all duration-200',
               'focus:outline-none focus:ring-2 focus:ring-offset-2',
