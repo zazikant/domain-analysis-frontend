@@ -9,7 +9,7 @@ PROJECT_ID="${GCP_PROJECT_ID:-feisty-outrider-471302-k6}"
 SERVICE_NAME="domain-analysis-frontend"
 REGION="europe-west1"
 IMAGE_NAME="gcr.io/$PROJECT_ID/$SERVICE_NAME"
-BACKEND_URL="https://advanced-csv-domain-analysis-456664817971.europe-west1.run.app"
+BACKEND_URL="https://domain-analysis-backend-456664817971.europe-west1.run.app"
 
 echo "🚀 Starting deployment of Domain Analysis Frontend..."
 echo "📋 Configuration:"
