@@ -105,6 +105,12 @@ export const EmailInput: React.FC<EmailInputProps> = ({
             type="submit"
             disabled={!isValid || isLoading || disabled}
             onClick={() => console.log(`Button state: isValid=${isValid}, isLoading=${isLoading}, disabled=${disabled}`)}
+            style={{
+              pointerEvents: 'auto',
+              position: 'relative', 
+              zIndex: 1000,
+              cursor: (!isValid || isLoading || disabled) ? 'not-allowed' : 'pointer'
+            }}
             className={clsx(
               'px-6 py-3 rounded-lg font-medium transition-all duration-200',
               'focus:outline-none focus:ring-2 focus:ring-offset-2',
