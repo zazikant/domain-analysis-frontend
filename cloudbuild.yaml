@@ -48,3 +48,7 @@ options:
 
 # Set build timeout
 timeout: 1200s
+
+# Default substitution variables
+substitutions:
+  _BACKEND_URL: 'https://domain-analysis-backend-456664817971.europe-west1.run.app'
