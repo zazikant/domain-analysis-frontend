@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import clsx from 'clsx';
 import { validateEmail } from '@/utils/api';
+
+// Simple clsx replacement
+const clsx = (...classes: (string | boolean | undefined)[]): string => {
+  return classes.filter(Boolean).join(' ');
+};
 
 interface EmailInputProps {
   onSendEmail: (email: string) => Promise<void>;
