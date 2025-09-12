@@ -11,13 +11,35 @@ export class ApiClient {
     this.sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  private getAuthHeaders(): Record<string, string> {
+    const token = localStorage.getItem('google_credential');
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return headers;
+  }
+
+  private getAuthHeadersForFormData(): Record<string, string> {
+    const token = localStorage.getItem('google_credential');
+    const headers: Record<string, string> = {};
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return headers;
+  }
+
   async sendMessage(email: string): Promise<ChatResponse> {
     try {
       const response = await fetch(`${API_BASE_URL}/chat/message`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           session_id: this.sessionId,
           message: email,
@@ -44,9 +66,7 @@ export class ApiClient {
     try {
       const response = await fetch(`${API_BASE_URL}/analyze`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           email: email,
           force_refresh: false
@@ -111,6 +131,7 @@ export class ApiClient {
       console.log('Making request to:', `${API_BASE_URL}/chat/preview-csv`);
       const response = await fetch(`${API_BASE_URL}/chat/preview-csv`, {
         method: 'POST',
+        headers: this.getAuthHeadersForFormData(),
         body: formData,
       });
 

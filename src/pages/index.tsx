@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 // Dynamic import to prevent SSR issues with the chat interface
 const ChatInterface = dynamic(() => import('@/components/ChatInterface'), {
@@ -39,7 +40,9 @@ export default function Home() {
       </Head>
 
       <main className="min-h-screen bg-gray-50">
-        <ChatInterface />
+        <ProtectedRoute>
+          <ChatInterface />
+        </ProtectedRoute>
       </main>
     </>
   );
