@@ -41,9 +41,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
             <div>
               <span className="font-medium">Domain:</span> {result.extracted_domain}
             </div>
-            {result.website_summary && (
+            {(result.company_summary || result.website_summary) && (
               <div>
-                <span className="font-medium">Summary:</span> {result.website_summary}
+                <span className="font-medium">Summary:</span> {result.company_summary || result.website_summary}
               </div>
             )}
             {result.confidence_score && (
@@ -51,6 +51,31 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
                 <span className="font-medium">Confidence:</span> {(result.confidence_score * 100).toFixed(0)}%
               </div>
             )}
+            {result.selection_reasoning && (
+              <div>
+                <span className="font-medium">Reasoning:</span> {result.selection_reasoning}
+              </div>
+            )}
+            {result.completed_timestamp && (
+              <div>
+                <span className="font-medium">Analyzed:</span> {new Date(result.completed_timestamp).toLocaleDateString()}
+              </div>
+            )}
+          </div>
+
+          <div className="border-t border-gray-200 pt-2 mt-3">
+            <div className="font-medium text-gray-700 mb-2">Company Information:</div>
+            <div className="space-y-1 text-sm">
+              <div>
+                <span className="font-medium">Company Name:</span> {result.company_name || "Can't Say"}
+              </div>
+              <div>
+                <span className="font-medium">Company Type:</span> {result.company_type || "Can't Say"}
+              </div>
+              <div>
+                <span className="font-medium">Base Location:</span> {result.base_location || "Can't Say"}
+              </div>
+            </div>
           </div>
 
           <div className="border-t border-gray-200 pt-2">
