@@ -4,7 +4,7 @@ import { ApiClient } from '@/utils/api';
 import MessageBubble from './MessageBubble';
 import EmailInput from './EmailInput';
 import FileUpload from './FileUpload';
-import MassiveBatchUpload from './MassiveBatchUpload';
+// import MassiveBatchUpload from './MassiveBatchUpload'; // COMMENTED OUT - massive batch processing disabled
 
 const apiClient = new ApiClient();
 
@@ -241,6 +241,7 @@ export const ChatInterface: React.FC = () => {
           <span>OR</span>
         </div>
         
+        {/* MASSIVE BATCH UPLOAD COMPONENT - COMMENTED OUT
         <MassiveBatchUpload
           isUploading={isLoading}
           disabled={false}
@@ -261,6 +262,7 @@ export const ChatInterface: React.FC = () => {
             });
           }}
         />
+        */}
       </div>
 
       {/* Footer */}
