@@ -35,11 +35,45 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             <strong>Domain:</strong> {result.extracted_domain}
           </div>
           <div className="result-item">
-            <strong>Summary:</strong> {result.website_summary || 'N/A'}
+            <strong>Summary:</strong> {result.company_summary || result.website_summary || 'N/A'}
           </div>
           <div className="result-item">
-            <strong>Confidence:</strong> 
+            <strong>Confidence:</strong>
             {result.confidence_score ? `${(result.confidence_score * 100).toFixed(1)}%` : 'N/A'}
+          </div>
+          <div className="result-item">
+            <strong>Reasoning:</strong> {result.selection_reasoning || 'N/A'}
+          </div>
+          <div className="result-item">
+            <strong>Analyzed:</strong>
+            {result.completed_timestamp ?
+              new Date(result.completed_timestamp).toLocaleDateString() :
+              'N/A'
+            }
+          </div>
+        </div>
+
+        <div className="company-information">
+          <h4>Company Information</h4>
+          <div className="company-grid">
+            <div className="company-item">
+              <span className="company-label">Company Name:</span>
+              <span className={`company-value ${result.company_name === "Can't Say" ? 'unknown' : 'known'}`}>
+                {result.company_name || "Can't Say"}
+              </span>
+            </div>
+            <div className="company-item">
+              <span className="company-label">Company Type:</span>
+              <span className={`company-value ${result.company_type === "Can't Say" ? 'unknown' : 'known'}`}>
+                {result.company_type || "Can't Say"}
+              </span>
+            </div>
+            <div className="company-item">
+              <span className="company-label">Base Location:</span>
+              <span className={`company-value ${result.base_location === "Can't Say" ? 'unknown' : 'known'}`}>
+                {result.base_location || "Can't Say"}
+              </span>
+            </div>
           </div>
         </div>
         
@@ -237,6 +271,59 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
         .result-item strong {
           min-width: 80px;
+        }
+
+        .company-information {
+          margin: 1rem 0;
+        }
+
+        .company-information h4 {
+          margin: 0 0 0.5rem 0;
+          font-size: 0.9rem;
+          font-weight: 600;
+        }
+
+        .company-grid {
+          display: grid;
+          gap: 0.5rem;
+        }
+
+        .company-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.25rem 0;
+        }
+
+        .company-label {
+          font-weight: 500;
+        }
+
+        .company-value {
+          padding: 0.25rem 0.5rem;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          font-weight: 500;
+        }
+
+        .company-value.known {
+          background: rgba(59, 130, 246, 0.2);
+          color: #2563eb;
+        }
+
+        .user-message .company-value.known {
+          background: rgba(255, 255, 255, 0.2);
+          color: white;
+        }
+
+        .company-value.unknown {
+          background: rgba(107, 114, 128, 0.2);
+          color: #6b7280;
+        }
+
+        .user-message .company-value.unknown {
+          background: rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.8);
         }
 
         .sector-classifications h4 {

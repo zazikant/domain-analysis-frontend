@@ -12,7 +12,8 @@ export interface AnalysisResult {
   extracted_domain: string;
   selected_url?: string;
   scraping_status: string;
-  website_summary?: string;
+  company_summary?: string;
+  website_summary?: string; // Keep for backward compatibility
   confidence_score?: number;
   selection_reasoning?: string;
   completed_timestamp?: string;
@@ -22,6 +23,10 @@ export interface AnalysisResult {
   real_estate?: string;
   infrastructure?: string;
   industrial?: string;
+  // Company information fields
+  company_type?: string;
+  company_name?: string;
+  base_location?: string;
 }
 
 export interface ChatResponse {
